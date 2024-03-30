@@ -1,12 +1,117 @@
 {% extends 'base.html' %}
  
 {% block title %}Home{% endblock %}
+
+{% block navbar %}
+<span class="navbar-text">
+  <a href="{% url 'logout' %}">ログアウト</a>
+</span>
+{% endblock %}
+
 {% block content %}
-  {% if user.is_authenticated %}
+{% csrf_token %}
+  <!-- {% if user.is_authenticated %}
     <p>こんにちは、{{ user.username }}さん!</p>
     <a href="{% url 'logout' %}">Log Out</a>
   {% else %}
     <p>ログインしてません</p>
     <a href="{% url 'login' %}">Log In</a>
-  {% endif %}
+  {% endif %} -->
+  <h2>こんにちは{{ user.username }}さん!</h2>
+  <div class="row justify-content-md-center bg-light">
+    <h1 class="display-4" id="myClock"></h1>
+  </div>
+  <div class="container my-2">
+    <div class="row">
+      <div class="d-grip gap-2 mx-auto">
+        <button id="attendance_button" type="button" class="btn btn-lg btn-success">出勤</button>
+    </div>
+      <div class="d-grip gap-2 mx-auto">
+        <button id="attendance_button" type="button" class="btn btn-lg btn-danger">退勤</button>
+      </div>
+    </div>
+  </div>
+  <div id="push_result" class="alert" role="alert" style="display:none"></div>
+
+  <script>
+    function updateClock() {
+      var now = new Date();
+      var hour = now.getHours();
+      var min = now.getMinutes();
+      var sec = now.getSeconds();
+      if (hour < 10) hour = "0" + hour;
+      if (min < 10) min = "0" + min;
+      if (sec < 10) sec = "0" + sec;
+      document.getElementById("myClock").innerHTML = hour + ":" + min + ":" + sec;
+    }
+    setInterval("updateClock();", 1000);
+
+    $('#attendance_button').on('click', function() {
+      $('#push_result').removeClass('alert-danger');
+      $('#push_result').removeClass('alert-info');
+      $('#push_result').hide();
+
+      $.ajax({
+        url: "{% url 'push' %}",
+        method:'POST',
+        dataType: 'json',
+        data: {
+          push_type:'attendance'
+        },
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            var csrftoken = getCookie('csrftoken');
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+        },
+      })
+      .done(function(data) {
+        console.log(data);
+        console.log(data.attendance_time);
+        if (data.result == 'success') {
+          $('#push_result').addClass('alert-info');
+          $('#push_result').text('出勤しました：' + data.attendance_time);
+          $('#push_result').show();
+        } else {
+          $('#push_result').addClass('alert-danger');
+          $('#push_result').text('すでに打刻済みです');
+          $('#push_result').show();
+        }
+      });
+    });
+
+    $('#leaving_button').on('click', function() {
+      $('#push_result').removeClass('alert-danger');
+      $('#push_result').removeClass('alert-info');
+      $('#push_result').hide();
+
+      $.ajax({
+        url: "{% url 'push' %}",
+        method:'POST',
+        dataType: 'json',
+        data: {
+          push_type:'leaving'
+        },
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            var csrftoken = getCookie('csrftoken');
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+        },
+      })
+      .done(function(data) {
+        console.log(data);
+        console.log(data.leaving_time);
+        if (data.result == 'success') {
+          $('#push_result').addClass('alert-info');
+          $('#push_result').text('退勤しました：' + data.leaving_time);
+          $('#push_result').show();
+        } else {
+          $('#push_result').addClass('alert-danger');
+          $('#push_result').text('すでに退勤打刻済みです');
+          $('#push_result').show();
+        }
+      });
+    });
+  </script>
 {% endblock %}
