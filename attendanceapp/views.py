@@ -13,10 +13,10 @@ class HomeView(LoginRequiredMixin, TemplateView):
 class PushTimecardView(LoginRequiredMixin, TemplateView):
     login_url = '/accounts/login/'
     def post(self, request, *args, **kwargs):
-        push_type = request.POST.get['push_type']
+        push_type = request.POST.get('push_type')
 
-        is_attendance = Attendances.objects.filter(
-            user=request.user, 
+        is_attendanced = Attendances.objects.filter(
+            user = request.user,
             attendance_time__date=datetime.now().date()
         ).exists()
 
@@ -28,10 +28,10 @@ class PushTimecardView(LoginRequiredMixin, TemplateView):
             response_time = attendance.attendance_time
             response_body = {
                 'result': 'success',
-                'leave_time': response_time.strftime('%Y-%m-%d %H:%M:%S')
+                'attendance_time': response_time.strftime('%Y-%m-%d %H:%M:%S')
             }
         elif push_type == 'leave':
-            if is_attendance:
+            if is_attendanced:
                 # 退勤するユーザーのレコードの退勤時間を更新する
                 attendance = Attendances.objects.filter(
                     user=request.user,
@@ -46,7 +46,6 @@ class PushTimecardView(LoginRequiredMixin, TemplateView):
                 }
             else:
                 response_body = {
-                    'result': 'error',
                     'message': 'Not attendance'
                 }
         if not response_body:
