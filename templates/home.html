@@ -27,7 +27,7 @@
         <button id="attendance_button" type="button" class="btn btn-lg btn-success">出勤</button>
     </div>
       <div class="d-grip gap-2 mx-auto">
-        <button id="attendance_button" type="button" class="btn btn-lg btn-danger">退勤</button>
+        <button id="leave_button" type="button" class="btn btn-lg btn-danger">退勤</button>
       </div>
     </div>
   </div>
@@ -60,8 +60,8 @@
         },
         beforeSend: function(xhr, settings) {
           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            var csrftoken = getCookie('csrftoken');
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            var csrfToken = getCookie('csrftoken');
+            xhr.setRequestHeader("X-CSRFToken", csrfToken);
           }
         },
       })
@@ -69,46 +69,49 @@
         console.log(data);
         console.log(data.attendance_time);
         if (data.result == 'success') {
+          $('#push_result').text('出勤しました： ' + data.attendance_time);
           $('#push_result').addClass('alert-info');
-          $('#push_result').text('出勤しました：' + data.attendance_time);
           $('#push_result').show();
         } else {
+          $('#push_result').text('すでに打刻しています');
           $('#push_result').addClass('alert-danger');
-          $('#push_result').text('すでに打刻済みです');
           $('#push_result').show();
         }
       });
     });
 
-    $('#leaving_button').on('click', function() {
+    $('#leave_button').on('click', function () {
       $('#push_result').removeClass('alert-danger');
       $('#push_result').removeClass('alert-info');
       $('#push_result').hide();
 
       $.ajax({
         url: "{% url 'push' %}",
-        method:'POST',
+        method: "POST",
         dataType: 'json',
         data: {
-          push_type:'leaving'
+         push_type: 'leave'
         },
         beforeSend: function(xhr, settings) {
           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            var csrftoken = getCookie('csrftoken');
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            var csrfToken = getCookie('csrftoken');
+            xhr.setRequestHeader("X-CSRFToken", csrfToken);
           }
         },
       })
       .done(function(data) {
         console.log(data);
-        console.log(data.leaving_time);
-        if (data.result == 'success') {
+        if (data.result == 'success'){
+          $('#push_result').text('退勤しました： ' + data.leave_time);
           $('#push_result').addClass('alert-info');
-          $('#push_result').text('退勤しました：' + data.leaving_time);
+          $('#push_result').show();
+        } else if (data.result == 'not_attended') {
+          $('#push_result').text('まだ出勤打刻がされていません');
+          $('#push_result').addClass('alert-danger');
           $('#push_result').show();
         } else {
+          $('#push_result').text('すでに退勤打刻がされています');
           $('#push_result').addClass('alert-danger');
-          $('#push_result').text('すでに退勤打刻済みです');
           $('#push_result').show();
         }
       });
