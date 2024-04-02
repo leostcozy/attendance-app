@@ -37,7 +37,7 @@
   <tbody>
     {% for fix_request in fix_requests %}
     <tr>
-      <td>{{ fix_request.id }}</td>
+      <td><a href="{% url 'acception_detail' fix_request.id %}">{{ fix_request.id }}</a></td>
       <td>{{ fix_request.user_name }}</td>
       <td>{{ fix_request.request_time }}</td>
       <!-- 確認状況 -->
