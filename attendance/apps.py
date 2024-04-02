@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class AttendanceappConfig(AppConfig):
+class AttendanceConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "attendanceapp"
+    name = "attendance"

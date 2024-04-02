@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "accounts",
-    "attendanceapp",
+    "attendance",
 ]
 
 MIDDLEWARE = [
@@ -39,7 +39,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "attendance.urls"
+ROOT_URLCONF = "attendanceproject.urls"
 
 TEMPLATES = [
     {
@@ -57,15 +57,21 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "attendance.wsgi.application"
+WSGI_APPLICATION = 'attendanceproject.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-try:
-    from .local_settings import *
-except ImportError:
-    pass
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "attendance-db",
+        "USER": "root",
+        "PASSWORD": "leo08178",
+        "HOST": "localhost",
+        "PORT": "3306"
+    }
+}
 
 
 # Password validation

@@ -1,10 +1,9 @@
-from django.contrib import admin
-from django.urls import path, include
-
+from django.urls import path
+from .views import HomeView, PushTimecardView, AttendanceRecords
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("accounts/", include("django.contrib.auth.urls")),
-    path("accounts/", include("accounts.urls")),
-    path("", include("attendanceapp.urls")),
+    path("", HomeView.as_view(), name="home"),
+    path("push/", PushTimecardView.as_view(), name="push"),
+    path("records/", AttendanceRecords.as_view(), name="records")
 ]
+
