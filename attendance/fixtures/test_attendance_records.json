@@ -1,0 +1,36 @@
+[
+    {
+        "model": "auth.user",
+        "pk": 1,
+        "fields": {
+            "username": "testuser",
+            "password": "pbkdf2_sha256$720000$fbhth38yw3phNxfOacfgN8$bPb7qGyu2NDgqvWCy21r2QrRYDF85nvicXhDuIOKSXU="
+        }
+    },
+    {
+        "model": "attendance.attendances",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "attendance_time": "2023-04-01T10:00:00",
+            "leave_time": "2023-04-01T19:00:00"
+        }
+    },
+    {
+        "model": "attendance.attendances",
+        "pk": 2,
+        "fields": {
+            "user": 1,
+            "attendance_time": "2023-04-02T10:00:00",
+            "leave_time": "2023-04-02T19:00:00"
+        }
+    },
+    {
+        "model": "attendance.attendances",
+        "pk": 3,
+        "fields": {
+            "user": 1,
+            "attendance_time": "2023-05-01T10:00:00"
+        }
+    }
+]
