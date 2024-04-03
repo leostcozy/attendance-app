@@ -14,27 +14,28 @@ class PushTimecardView(LoginRequiredMixin, TemplateView):
     login_url = '/accounts/login/'
     def post(self, request, *args, **kwargs):
         push_type = request.POST.get('push_type')
-
+        # 出勤しているかを調べる
         is_attendanced = Attendances.objects.filter(
             user = request.user,
             attendance_time__date=datetime.now().date()
         ).exists()
+        # 退勤しているかを調べる
         is_left = Attendances.objects.filter(
             user = request.user,
             leave_time__date = date.today()
         ).exists()
 
         response_body = {}
-        if push_type == 'attendance' and not is_attendanced:
+        if push_type == 'attendance' and not is_attendanced: # 出勤ボタンが押された時かつ今日の出勤データがない場合
             # 出勤したユーザーをDBに保存する
             attendance = Attendances(user=request.user)
             attendance.save()
             response_time = attendance.attendance_time
             response_body = {
-                'result': 'success',
-                'attendance_time': response_time.strftime('%Y-%m-%d %H:%M:%S')
+                "result": "success",
+                "attendance_time": response_time.strftime('%Y-%m-%d %H:%M:%S')
             }
-        elif push_type == 'leave' and not is_left:
+        elif push_type == 'leave' and not is_left: # 退勤ボタンが押された時かつ今日の退勤データがない場合
             if is_attendanced:
                 # 退勤するユーザーのレコードの退勤時間を更新する
                 attendance = Attendances.objects.filter(
@@ -45,16 +46,16 @@ class PushTimecardView(LoginRequiredMixin, TemplateView):
                 attendance.save()
                 response_time = attendance.leave_time
                 response_body = {
-                    'result': 'success',
-                    'leave_time': response_time.strftime('%Y-%m-%d %H:%M:%S')
+                    "result": "success",
+                    "leave_time": response_time.strftime('%Y-%m-%d %H:%M:%S')
                 }
             else:
                 response_body = {
-                    'message': 'Not attendance'
+                    "result": "not_attended"
                 }
         if not response_body:
             response_body = {
-                'result': 'already_exists'
+                "result": "already_exists"
             }
         return JsonResponse(response_body)
         
@@ -63,7 +64,8 @@ class AttendanceRecords(LoginRequiredMixin, TemplateView):
     login_url = '/accounts/login/'
     def get(self, request, *args, **kwargs):
         today = datetime.today()
-
+        # search_year = today.year
+        # search_month = today.month
         # リクエストパラメータを受け取る
         search_param = request.GET.get('year_month')
         if search_param:
@@ -75,32 +77,32 @@ class AttendanceRecords(LoginRequiredMixin, TemplateView):
             search_month = today.month
         
         # 年と月で絞り込み
-        month_attandance =Attendances.objects.filter(
+        month_attandances =Attendances.objects.filter(
             user = request.user,
             attendance_time__year = search_year,
             attendance_time__month = search_month
         ).order_by('attendance_time')
 
         # context用のデータに整形
-        attendance_context =[]
-        for attendance in month_attandance:
+        attendances_context =[]
+        for attendance in month_attandances:
             attendance_time = attendance.attendance_time
             leave_time = attendance.leave_time
             if leave_time:
-                leave_time = leave_time.strftime('%Y-%m-%d %H:%M:%S')
+                leave_time = leave_time.strftime('%H:%M:%S')
             else:
                 if attendance_time.date() == today.date():
                     leave_time = None
                 else:
                     leave_time = 'not_pushed'
             day_attendance = {
-                'date': attendance_time.strftime('%Y-%m-%d %H:%M:%S'),
-                'attendance_at': attendance_time.strftime('%Y-%m-%d %H:%M:%S'),
+                'date': attendance_time.strftime('%Y-%m-%d'),
+                'attendance_at': attendance_time.strftime('%H:%M:%S'),
                 'leave_at': leave_time
                 }
-            attendance_context.append(day_attendance)
+            attendances_context.append(day_attendance)
         
-        context = {'attendance': attendance_context}
+        context = {'attendances': attendances_context}
         # Templateにcontextを含めてレスポンスを返す
         return self.render_to_response(context)
 

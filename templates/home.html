@@ -19,7 +19,7 @@
 <span class="navbar-text">
   <form action="{% url 'logout' %}" method="post">
     {% csrf_token %}
-    <button type="submit">ログアウト</button>
+    <button type="submit" class="btn btn-primary btn-sm">ログアウト</button>
   </form>
   
 </span>
@@ -44,6 +44,7 @@
   <div id="push_result" class="alert" role="alert" style="display:none"></div>
 
   <script>
+    // デジタル時計を生成
     function updateClock() {
       var now = new Date();
       var hour = now.getHours();
@@ -60,7 +61,7 @@
       $('#push_result').removeClass('alert-danger');
       $('#push_result').removeClass('alert-info');
       $('#push_result').hide();
-
+      // csrfトークンを取得
       $.ajax({
         url: "{% url 'push' %}",
         method:'POST',
@@ -94,7 +95,7 @@
       $('#push_result').removeClass('alert-danger');
       $('#push_result').removeClass('alert-info');
       $('#push_result').hide();
-
+      // csrfトークンを取得
       $.ajax({
         url: "{% url 'push' %}",
         method: "POST",

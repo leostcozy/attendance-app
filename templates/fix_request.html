@@ -19,7 +19,7 @@
 <span class="navbar-text">
     <form action="{% url 'logout' %}" method="post">
         {% csrf_token %}
-        <button type="submit">ログアウト</button>
+        <button type="submit" class="btn btn-primary btn-sm">ログアウト</button>
     </form>
 </span>
 {% endblock %}
