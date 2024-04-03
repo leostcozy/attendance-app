@@ -95,15 +95,15 @@ class AttendanceRecordsTest(TestCase):
         '''
         出勤簿に表示するデータがある時のcontextを確認するテスト
         '''
-        # 2021/4の出勤簿を開く
-        response = self.client.get('/records', {'year_month': '2021-4'})
+        # 2023/4の出勤簿を開く
+        response = self.client.get('/records/', {'year_month': '2023-4'})
         # ステータスコードが200であること
         self.assertEqual(response.status_code, 200)
         # contextの出勤記録が２つあること
         self.assertEqual(len(response.context['attendances']), 2)
 
-        # 2021/5の出勤簿を開く
-        response = self.client.get('/records', {'year_month': '2021-5'})
+        # 2023/5の出勤簿を開く
+        response = self.client.get('/records/', {'year_month': '2023-5'})
         self.assertEqual(response.status_code, 200)
         # contextの出勤記録が1つあること
         self.assertEqual(len(response.context['attendances']), 1)
@@ -114,8 +114,8 @@ class AttendanceRecordsTest(TestCase):
         '''
         出勤簿に表示するデータがないときのcontextを確認するテスト
         '''
-        # 2021/6の出勤簿を開く
-        response = self.client.get('/records', {'year_month': '2021-6'})
+        # 2023/6の出勤簿を開く
+        response = self.client.get('/records/', {'year_month': '2023-6'})
         self.assertEqual(response.status_code, 200)
         # contextの出勤記録が1つもないこと
         self.assertEqual(len(response.context['attendances']), 0)
