@@ -36,6 +36,10 @@
       <div class="d-grip gap-2 mx-auto">
         <button id="attendance_button" type="button" class="btn btn-lg btn-success">出勤</button>
     </div>
+      <div class="d-grip gap-2 mx-auto"> <!-- 休憩ボタンの追加 -->
+        <button id="break_start_button" type="button" class="btn btn-lg btn-warning">休憩開始</button>
+        <button id="break_end_button" type="button" class="btn btn-lg btn-warning">休憩終了</button>
+      </div>
       <div class="d-grip gap-2 mx-auto">
         <button id="leave_button" type="button" class="btn btn-lg btn-danger">退勤</button>
       </div>
@@ -57,6 +61,7 @@
     }
     setInterval("updateClock();", 1000);
 
+    // 出勤ボタンを押した際の処理
     $('#attendance_button').on('click', function() {
       $('#push_result').removeClass('alert-danger');
       $('#push_result').removeClass('alert-info');
@@ -91,6 +96,66 @@
       });
     });
 
+    // 休憩開始ボタンを押した際の処理
+    $('#break_start_button').on('click', function() {
+      $('#push_result').removeClass('alert-danger');
+      $('#push_result').removeClass('alert-info');
+      $('#push_result').hide();
+    // csrfトークンを取得
+    $.ajax({
+        url: "{% url 'push' %}",
+        method: "POST",
+        dataType: 'json',
+        data: {
+         push_type: 'break_start'
+        },
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            var csrfToken = getCookie('csrftoken');
+            xhr.setRequestHeader("X-CSRFToken", csrfToken);
+          }
+        },
+      })
+      .done(function(data) {
+        console.log(data);
+        if (data.result == 'break_start_success') {
+          $('#push_result').text('休憩開始しました： ' + data.break_start_time);
+          $('#push_result').addClass('alert-info').show();
+        } else {
+          $('#push_result').text('出勤打刻されていないか、休憩は既に開始されています').addClass('alert-danger').show();
+        }
+      });
+    });
+    //休憩終了ボタンを押した際の処理
+    $('#break_end_button').on('click', function() {
+      $('#push_result').removeClass('alert-danger');
+      $('#push_result').removeClass('alert-info');
+      $('#push_result').hide();
+    // csrfトークンを取得
+    $.ajax({
+      url: "{% url 'push' %}",
+      method: "POST",
+      dataType: 'json',
+      data: {
+        push_type: 'break_end'
+      },
+      beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+          var csrfToken = getCookie('csrftoken');
+          xhr.setRequestHeader("X-CSRFToken", csrfToken);
+        }
+      },
+    })
+    .done(function(data) {
+        if (data.result == 'break_end_success') {
+          $('#push_result').text('休憩終了しました： ' + data.break_end_time);
+          $('#push_result').addClass('alert-info').show();
+        } else {
+          $('#push_result').text('休憩が開始されていないか、既に終了しています').addClass('alert-danger').show();
+        }
+      });
+    });
+    // 退勤ボタンを押した際の処理
     $('#leave_button').on('click', function () {
       $('#push_result').removeClass('alert-danger');
       $('#push_result').removeClass('alert-info');
@@ -113,7 +178,7 @@
       .done(function(data) {
         console.log(data);
         if (data.result == 'success'){
-          $('#push_result').text('退勤しました： ' + data.leave_time);
+          $('#push_result').text('本日もお疲れ様でした： ' + data.leave_time);
           $('#push_result').addClass('alert-info');
           $('#push_result').show();
         } else if (data.result == 'not_attended') {
