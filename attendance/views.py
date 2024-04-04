@@ -19,6 +19,16 @@ class PushTimecardView(LoginRequiredMixin, TemplateView):
             user = request.user,
             attendance_time__date=datetime.now().date()
         ).exists()
+        # 休憩中か調べる
+        is_break_started = Attendances.objects.filter(
+            user = request.user,
+            break_start_time__date=date.today()
+        ).exists()
+        # 休憩終了したか調べる
+        is_break_end = Attendances.objects.filter(
+            user = request.user,
+            break_end_time__date=date.today()
+        ).exists()
         # 退勤しているかを調べる
         is_left = Attendances.objects.filter(
             user = request.user,
@@ -34,6 +44,30 @@ class PushTimecardView(LoginRequiredMixin, TemplateView):
             response_body = {
                 "result": "success",
                 "attendance_time": response_time.strftime('%Y-%m-%d %H:%M:%S')
+            }
+        elif push_type == 'break_start' and not is_break_started and is_attendanced: # 休憩開始ボタンが押された時かつ今日の休憩データがない時かつ今日の出勤データがある場合
+            # 休憩開始時間を更新する
+            attendance = Attendances.objects.filter(
+                user=request.user,
+                attendance_time__date= date.today()
+            )[0]
+            attendance.break_start_time = datetime.now()
+            attendance.save()
+            response_body = {
+                "result": "break_start_success",
+                "break_start_time": attendance.break_start_time.strftime('%Y-%m-%d %H:%M:%S')
+            }
+        elif push_type == 'break_end' and not is_break_end and is_break_started: # 休憩終了ボタンが押された時かつ、今日の休憩終了データがない時かつ、今日の休憩開始データがある場合
+            # 休憩終了時間を更新する
+            attendance = Attendances.objects.filter(
+                user=request.user,
+                break_start_time__date= date.today()
+            )[0]
+            attendance.break_end_time = datetime.now()
+            attendance.save()
+            response_body = {
+                "result": "break_end_success",
+                "break_end_time": attendance.break_end_time.strftime('%Y-%m-%d %H:%M:%S')
             }
         elif push_type == 'leave' and not is_left: # 退勤ボタンが押された時かつ今日の退勤データがない場合
             if is_attendanced:
