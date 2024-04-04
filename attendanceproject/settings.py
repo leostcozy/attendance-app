@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "accounts",
     "attendance",
     "fix_request",
+    "workhour",
 ]
 
 MIDDLEWARE = [

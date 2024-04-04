@@ -13,4 +13,5 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
     path("", include("attendance.urls")),
     path("fix_request/", include("fix_request.urls")),
+    path("workhour/", include("workhour.urls")),
 ]
