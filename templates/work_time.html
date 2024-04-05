@@ -37,8 +37,6 @@
       </div>
     </div>
 </div>
-
-{% if attendances %}
     <table class="table">
         <thead>
             <tr>
@@ -55,13 +53,9 @@
             {% endfor %}
         </tbody>
     </table>
-    {% else %}
-        <div class="p-3 mb-s bg-light text-dark">労働時間の記録がありません</div>
-    {% endif %}
-
     <script>
         $('#month_search').on('click', function() {
-            var searchParam = $('#search_param').val();
+            let searchParam = $('#search_param').val();
             window.location.href = "{% url 'work_time' %}?year_month=" + searchParam;
         });
     </script>

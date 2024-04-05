@@ -83,8 +83,8 @@
     
   <script>
   $('button').on('click', function () {
-    var btnValue = $(this).attr("value");
-    var request_id = $('#request_id').text();
+    let btnValue = $(this).attr("value");
+    let request_id = $('#request_id').text();
     $.ajax({
       url: "{% url 'push_acception' %}",
       method: 'POST',
@@ -95,7 +95,7 @@
       },
       beforeSend: function(xhr, settings) {
         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-          var csrfToken = getCookie("csrftoken");
+          let csrfToken = getCookie("csrftoken");
           xhr.setRequestHeader("X-CSRFToken", csrfToken);
         }
       },

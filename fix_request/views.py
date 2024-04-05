@@ -20,11 +20,11 @@ class FixAttendanceRequestView(LoginRequiredMixin, TemplateView):
         # 表示用に整形
         for fix_request in fix_requests:
             if not fix_request.is_accepted and not fix_request.checked_time:
-                request_status = 'not_checked'
+                request_status = 'not_checked' #未確認
             elif not fix_request.is_accepted and fix_request.checked_time:
-                request_status = 'rejected'
+                request_status = 'rejected' #拒否された
             else:
-                request_status = 'accepted'
+                request_status = 'accepted' #承認済
             resp_param = {
                 'date': fix_request.revision_time.strftime('%Y/%m/%d'),
                 'stamp_type': fix_request.get_stamp_type_display(),

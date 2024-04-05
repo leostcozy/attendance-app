@@ -70,7 +70,7 @@
     {% endif %}
     <script>
         $('#month_search').on('click', function() {
-          var searchParam = $('#search_param').val();
+          let searchParam = $('#search_param').val();
           window.location.href = "{% url 'records' %}?year_month=" + searchParam;
         });
     </script>

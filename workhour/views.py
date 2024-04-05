@@ -1,5 +1,4 @@
-from django.shortcuts import render
-from datetime import datetime, timedelta
+from datetime import datetime
 from .models import Attendances
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import TemplateView
