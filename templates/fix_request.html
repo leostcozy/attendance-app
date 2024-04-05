@@ -111,7 +111,7 @@
 <!-- 申請ボタンを押した際の処理 -->
 <script>
   $('#submit_request').on('click', function() {
-    var isEmpty = false;
+    let isEmpty = false;
     // フォームのバリデーション
     jQuery('#push_date, #push_type, #push_time, #push_reason').each(function(){
       if(jQuery(this).val() === ''){
@@ -137,7 +137,7 @@
       },
       beforeSend: function(xhr, settings) {
         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-          var csrfToken = getCookie("csrftoken");
+          let csrfToken = getCookie("csrftoken");
           xhr.setRequestHeader("X-CSRFToken", csrfToken);
         }
       },

@@ -53,10 +53,10 @@
   <script>
     // デジタル時計を生成
     function updateClock() {
-      var now = new Date();
-      var hour = now.getHours();
-      var min = now.getMinutes();
-      var sec = now.getSeconds();
+      let now = new Date();
+      let hour = now.getHours();
+      let min = now.getMinutes();
+      let sec = now.getSeconds();
       if (hour < 10) hour = "0" + hour;
       if (min < 10) min = "0" + min;
       if (sec < 10) sec = "0" + sec;
@@ -79,7 +79,7 @@
         },
         beforeSend: function(xhr, settings) {
           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            var csrfToken = getCookie('csrftoken');
+            let csrfToken = getCookie('csrftoken');
             xhr.setRequestHeader("X-CSRFToken", csrfToken);
           }
         },
@@ -114,7 +114,7 @@
         },
         beforeSend: function(xhr, settings) {
           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            var csrfToken = getCookie('csrftoken');
+            let csrfToken = getCookie('csrftoken');
             xhr.setRequestHeader("X-CSRFToken", csrfToken);
           }
         },
@@ -144,7 +144,7 @@
       },
       beforeSend: function(xhr, settings) {
         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-          var csrfToken = getCookie('csrftoken');
+          let csrfToken = getCookie('csrftoken');
           xhr.setRequestHeader("X-CSRFToken", csrfToken);
         }
       },
@@ -173,7 +173,7 @@
         },
         beforeSend: function(xhr, settings) {
           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            var csrfToken = getCookie('csrftoken');
+            let csrfToken = getCookie('csrftoken');
             xhr.setRequestHeader("X-CSRFToken", csrfToken);
           }
         },
