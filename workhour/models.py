@@ -7,8 +7,8 @@ from datetime import datetime
 
 class WorkTime(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    year = models.IntegerField(default=datetime.now().year)  
-    month = models.IntegerField(default=datetime.now().month)
+    year = models.IntegerField(default=lambda: datetime.now().year)  
+    month = models.IntegerField(default=lambda: datetime.now().month)
     work_time = models.DurationField(null=True)
     break_time = models.DurationField(null=True)
     actual_work_time = models.DurationField(null=True)  # 実際の勤務時間（休憩時間を引いた時間）
@@ -27,6 +27,9 @@ class WorkTime(models.Model):
 
     def break_time_format(self):
         return self.format_duration(self.break_time)
+    
+    def actual_work_time_format(self):
+        return self.format_duration(self.actual_work_time)
 
     def __str__(self):
         return self.user.username
