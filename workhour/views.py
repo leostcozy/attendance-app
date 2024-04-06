@@ -1,7 +1,8 @@
 from datetime import datetime
-from .models import Attendances
+from .models import Attendances, WorkTime
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import TemplateView
+from datetime import timedelta
 
 class WorkTimeView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'work_time.html'
@@ -29,18 +30,26 @@ class WorkTimeView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             attendance_time__month=search_month
         )
 
-        # 勤務時間を計算し、結果をリストに保存
+        # 勤務時間を計算し、結果を辞書に保存
         work_times = {}
         for attendance in attendances:
-            if attendance.leave_time and attendance.attendance_time:
+            if attendance.leave_time and attendance.attendance_time: # 出勤時間と退勤時間がある場合
                 # 勤務時間（退勤時間 - 出勤時間）を計算
                 work_time = attendance.leave_time - attendance.attendance_time
                 # ユーザーごとに勤務時間を集計
-                if attendance.user.username in work_times:
-                    work_times[attendance.user.username] += work_time
-                else:
-                    work_times[attendance.user.username] = work_time
+                work_time_obj, created = WorkTime.objects.get_or_create(
+                    user=attendance.user,
+                    defaults={'work_time': timedelta(), 'break_time': timedelta()}
+                )
+                if created:
+                    # 新規作成された場合、計算した勤務時間を設定
+                    work_time_obj.work_time = work_time
+                
 
+                work_time_obj.save()  # 変更をデータベースに保存
+
+                # 辞書にはユーザー名をキーとしてWorkTimeインスタンスを格納
+                work_times[attendance.user.username] = work_time_obj
         # 結果をテンプレートに渡す
         context = {
             'work_times': work_times,
