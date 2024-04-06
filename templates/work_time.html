@@ -42,13 +42,17 @@
             <tr>
               <th scope="col">ユーザー名</th>
               <th scope="col">総労働時間</th>
+              <th scope="col">休憩時間</th>
+              <th scope="col">実労働時間</th>
             </tr>
         </thead>
         <tbody>
-            {% for user, total_work_time in work_times.items %}
+            {% for user, work_time_obj in work_times.items %}
             <tr>
                 <td>{{ user }}</td>
-                <td>{{ total_work_time }}</td>
+                <td>{{ work_time_obj.work_time_format }}</td>
+                <td>{{ work_time_obj.break_time_format }}</td>
+                <td>{{ work_time_obj.real_work_time_format }}</td>
             </tr>
             {% endfor %}
         </tbody>
