@@ -1,0 +1,8 @@
+
+# created by virtualenv automatically
+*.log
+*.pyc
+__pycache__/
+.env
+get_random_secret_key.py
+local_settings.py
