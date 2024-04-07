@@ -55,4 +55,3 @@ class WorkTimeView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             'work_times': work_times,
         }
         return self.render_to_response(context)
-
