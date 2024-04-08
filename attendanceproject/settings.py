@@ -1,7 +1,7 @@
 import os
 import environ
 from pathlib import Path
-import dj_database_url
+import dj_database_url, django_heroku
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -16,7 +16,7 @@ env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False #env.bool('DEBUG') ほんとはこっち.envファイルに書いて
+DEBUG = False #env.bool('DEBUG') # 開発時はTrueにする
 
 ALLOWED_HOSTS = ['*']
 
@@ -123,6 +123,7 @@ USE_TZ = False
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

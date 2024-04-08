@@ -20,12 +20,17 @@
 <span class="navbar-text">
     <form action="{% url 'logout' %}" method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-primary btn-sm">ログアウト</button>
+        <button type="submit" class="btn btn-primary btn-info">ログアウト</button>
     </form>
 </span>
 {% endblock %}
 
 {% block content %}
+<style>
+  body {
+    background: #eeeeee;
+  }
+</style>
 {% csrf_token %}
 <h2>申請一覧</h2>
 <table class="table">

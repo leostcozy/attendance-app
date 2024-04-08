@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
  
 {% block title %}Home{% endblock %}
 
@@ -22,17 +23,57 @@
 <span class="navbar-text">
   <form action="{% url 'logout' %}" method="post">
     {% csrf_token %}
-    <button type="submit" class="btn btn-primary btn-sm">ログアウト</button>
+    <button type="submit" class="btn btn-primary btn-info">ログアウト</button>
   </form>
-  
 </span>
 {% endblock %}
 
 {% block content %}
+<style>
+  body {
+    background: #eeeeee;
+  }
+  .disabled-button {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .clock-container {
+    display: flex; /* Flexboxを有効化 */
+    justify-content: space-between;
+    margin-bottom: 20; /* 子要素の間に均等なスペースを作る *//* 子要素を中央揃えにする */
+  }
+  #myClock {
+    font-size: 4em; /* フォントサイズを大きくする */
+    font-weight: bold; /* フォントを太くする */
+    color: #414141; /* フォントの色を変更する */
+    background-color: #eeeeee; /* 背景色を変更する */
+    border-radius: 20px; /* 角を丸くする */
+    padding: 20px; /* 内側の余白を追加する */
+    margin-top: 30px;
+    margin-right: 85px;
+    display: inline-block; /* インラインブロック要素として表示 */
+  }
+  #dateDisplay {
+    font-size: 1em; /* フォントサイズを適切に設定する */
+    font-weight: bold; /* フォントウェイトを適切に設定する */
+    color: #414141;
+    border-radius: 20px; /* フォントの色を適切に設定する */
+    margin-bottom: 10px; 
+    margin-top: 50px;
+  }
+  h2 {
+    color: #414141;
+    margin-top: 30px;
+    font-weight: bold;
+  }
+
+  
+</style>
 {% csrf_token %}
   <h2>こんにちは{{ user.username }}さん!</h2>
-  <div class="row justify-content-md-center bg-light">
-    <h1 class="display-4" id="myClock"></h1>
+  <div class="clock-container">
+    <div id="dateDisplay"></div> <!-- 日付と曜日を表示するための要素 -->
+    <h1 id="myClock" class="display-4"></h1>
   </div>
   <div class="container my-2">
     <div class="row">
@@ -63,12 +104,32 @@
       document.getElementById("myClock").innerHTML = hour + ":" + min + ":" + sec;
     }
     setInterval("updateClock();", 1000);
+    $(document).ready(function() {
+    
+      // 日付と曜日を表示するスクリプト
+    function updateDateAndTime() {
+      let now = new Date();
+      let year = now.getFullYear();
+      let month = now.getMonth() + 1; // 月は0から始まるため1を加える
+      let day = now.getDate();
+      let week = ['日', '月', '火', '水', '木', '金', '土'][now.getDay()]; // 曜日を取得
+      let dateStr = `${year}/${month}/${day}(${week})`; // 日付と曜日の文字列を生成
+
+      document.getElementById("dateDisplay").textContent = dateStr; // 日付と曜日を表示
+      updateClock(); // 時間を更新
+    }
+
+    setInterval(updateDateAndTime, 1000);
 
     // 出勤ボタンを押した際の処理
+
     $('#attendance_button').on('click', function() {
       $('#push_result').removeClass('alert-danger');
       $('#push_result').removeClass('alert-info');
       $('#push_result').hide();
+      $(this).prop('disabled', true).addClass('disabled-button');
+      $('#break_start_button').prop('disabled', false).removeClass('disabled-button');
+      $('#break_end_button, #leave_button').prop('disabled', true).addClass('disabled-button');
       // csrfトークンを取得
       $.ajax({
         url: "{% url 'push' %}",
@@ -122,6 +183,9 @@
       .done(function(data) {
         console.log(data);
         if (data.result == 'break_start_success') {
+          $(this).prop('disabled', true).addClass('disabled-button');
+          $('#break_end_button').prop('disabled', false).removeClass('disabled-button');
+          $('#attendance_button, #leave_button').prop('disabled', true).addClass('disabled-button')
           $('#push_result').text('休憩開始しました： ' + data.break_start_time);
           $('#push_result').addClass('alert-info').show();
         } else {
@@ -131,6 +195,9 @@
     });
     //休憩終了ボタンを押した際の処理
     $('#break_end_button').on('click', function() {
+      $(this).prop('disabled', true).addClass('disabled-button');
+      $('#leave_button').prop('disabled', false).removeClass('disabled-button');
+      $('#attendance_button, #break_start_button').prop('disabled', true).addClass('disabled-button');
       $('#push_result').removeClass('alert-danger');
       $('#push_result').removeClass('alert-info');
       $('#push_result').hide();
@@ -195,5 +262,7 @@
         }
       });
     });
+  });
   </script>
 {% endblock %}
+
