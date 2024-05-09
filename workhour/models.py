@@ -9,11 +9,11 @@ class WorkTime(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     year = models.IntegerField(default= datetime.now().year)  
     month = models.IntegerField(default= datetime.now().month)
-    work_time = models.DurationField(null=True)
-    break_time = models.DurationField(null=True)
+    work_time = models.DurationField(null=True) 
+    break_time = models.DurationField(null=True) 
     actual_work_time = models.DurationField(null=True)  # 実際の勤務時間（休憩時間を引いた時間）
     
-    def format_duration(self, duration):
+    def format_duration(self, duration): #受け取ったDurationの期間を「時間分秒」の形式で文字列に整形
         if duration:
             total_seconds = int(duration.total_seconds())
             hours = total_seconds // 3600

@@ -74,9 +74,9 @@
         <div class="p-3 mb-s bg-light text-dark">勤怠の記録がありません</div>
     {% endif %}
     <script>
-        $('#month_search').on('click', function() {
-          let searchParam = $('#search_param').val();
-          window.location.href = "{% url 'records' %}?year_month=" + searchParam;
+        $('#month_search').on('click', function() { //特定の月を選択して「検索」ボタンをクリックしたときの処理
+          let searchParam = $('#search_param').val(); //search_param id属性のinput要素
+          window.location.href = "{% url 'records' %}?year_month=" + searchParam; //URL遷移
         });
     </script>
 {% endblock %}

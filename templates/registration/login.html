@@ -9,7 +9,7 @@
   }
 </style>
     <h2>ログイン</h2>
-    <form method="post">
+    <form method="post"> <!--ブラウザからサーバーに入力値を送る場合に使用するmethod-->
      {% csrf_token %}
      {% for error in form.non_field_errors %}
      <div class="alert alert-danger" role="alert">

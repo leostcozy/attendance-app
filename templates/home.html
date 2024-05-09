@@ -70,7 +70,7 @@
   
 </style>
 {% csrf_token %}
-  <h2>こんにちは{{ user.username }}さん!</h2>
+  <h2>こんにちは{{ user.username }}さん!</h2> <!-- django.contrib.authのUserモデルからユーザー名を取得 -->
   <div class="clock-container">
     <div id="dateDisplay"></div> <!-- 日付と曜日を表示するための要素 -->
     <h1 id="myClock" class="display-4"></h1>
@@ -98,12 +98,13 @@
       let hour = now.getHours();
       let min = now.getMinutes();
       let sec = now.getSeconds();
-      if (hour < 10) hour = "0" + hour;
+      if (hour < 10) hour = "0" + hour; //時、分、秒が10未満の場合は、先頭に "0" を追加して2桁表示に整形。
       if (min < 10) min = "0" + min;
       if (sec < 10) sec = "0" + sec;
+      // getElementById()メソッドでid属性がmyClockの要素を取得し、innerHTMLプロパティで要素内のテキストを書き換える
       document.getElementById("myClock").innerHTML = hour + ":" + min + ":" + sec;
     }
-    setInterval("updateClock();", 1000);
+    setInterval("updateClock();", 1000); // setInterval…一定時間ごとに特定の処理を繰り返す
     $(document).ready(function() {
     
       // 日付と曜日を表示するスクリプト
@@ -114,7 +115,7 @@
       let day = now.getDate();
       let week = ['日', '月', '火', '水', '木', '金', '土'][now.getDay()]; // 曜日を取得
       let dateStr = `${year}/${month}/${day}(${week})`; // 日付と曜日の文字列を生成
-
+      // getElementById()メソッドでid属性がdateDisplayの要素を取得し、textContentプロパティで要素内のテキストを書き換える
       document.getElementById("dateDisplay").textContent = dateStr; // 日付と曜日を表示
       updateClock(); // 時間を更新
     }
@@ -123,8 +124,8 @@
 
     // 出勤ボタンを押した際の処理
 
-    $('#attendance_button').on('click', function() {
-      $('#push_result').removeClass('alert-danger');
+    $('#attendance_button').on('click', function() { //jqueryでボタンのid属性を指定して.onでクリックイベントを設定。 click：要素がクリックされた時に発動
+      $('#push_result').removeClass('alert-danger'); 
       $('#push_result').removeClass('alert-info');
       $('#push_result').hide();
       $(this).prop('disabled', true).addClass('disabled-button');

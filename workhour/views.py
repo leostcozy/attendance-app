@@ -15,9 +15,9 @@ class WorkTimeView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         # リクエストから年月を取得
         search_param = request.GET.get('year_month')
         if search_param:
-            search_params = list(map(int, search_param.split('-')))
-            search_year = search_params[0]
-            search_month = search_params[1]
+            search_params = list(map(int, search_param.split('-')))#map(関数, イテラブル)でイテラブルの全要素にint関数を適用、リストに変換。.aplit('-')で'-'で区切る
+            search_year = search_params[0] # リクエストパラメータの引数1つ目＝年
+            search_month = search_params[1] # リクエストパラメータの引数2つ目＝月
         else:
             today = datetime.today()
             search_year = today.year
@@ -40,7 +40,7 @@ class WorkTimeView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
                     break_time = attendance.break_end_time - attendance.break_start_time
                 actual_work_time = work_time - break_time
 
-                work_time_obj, created = WorkTime.objects.update_or_create(
+                work_time_obj, created = WorkTime.objects.update_or_create( #update_or_createで既存のレコードを更新、なければ新規作成
                     user=attendance.user,
                     defaults={
                         'work_time': work_time,
